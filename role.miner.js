@@ -12,16 +12,16 @@ var roleMiner = {
         }
 
         // Find nearest source and move to it
-        if (!creep.memory.moving && creep.store.getFreeCapacity() > 0) {
+        if (!creep.memory.moving && creep.harvest(sources) == ERR_NOT_IN_RANGE) {
             creep.memory.moving = true;
             creep.say('moving');
         }
-        if (creep.memory.moving && creep.store.getFreeCapacity() == 0) {
+        if (creep.memory.moving && creep.harvest(sources) == OK) {
             creep.memory.moving = false;
             creep.say('here');
         }
 
-        // console.log(creep.memory.moving);
+        console.log('Moving? ' + creep.memory.moving);
 
         if (creep.memory.moving) {
             var sources = creep.pos.findClosestByPath(FIND_SOURCES);
@@ -30,9 +30,13 @@ var roleMiner = {
             }
         }
         else {
+            // Build a container if there isn't already one there
             var canBuildContainer = creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
+            var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+            console.log(target.progress +  ' of ' + target.progressTotal);
 
-            if (canBuildContainer == -7) {
+            // If one is there, then work on building it, then filling it
+            if (canBuildContainer == ERR_INVALID_TARGET && (target.progress < target.progressTotal)) {
                 if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
                     creep.memory.building = false;
                     creep.say('🔄 harvest');
@@ -51,6 +55,10 @@ var roleMiner = {
                     creep.harvest(source);
                 }
             }
+            if (canBuildContainer == ERR_INVALID_TARGET && (target.progress == target.progressTotal)) {
+                console.log('container done');
+            }
+            
         }
     }
 }

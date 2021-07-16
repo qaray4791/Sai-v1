@@ -50,11 +50,11 @@ module.exports.loop = function () {
     var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
     if (miners.length < desiredMiners) {
         var newName = 'Miner' + Game.time;
-        var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE], newName,
+        var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, CARRY, MOVE], newName,
             { memory: { role: 'miner', dryRun: true } });
         if (canSpawnMiner == 0) {
             console.log('Spawning new miner: ' + newName);
-            Game.spawns[spawnName].spawnCreep[WORK, CARRY, MOVE], newName,
+            Game.spawns[spawnName].spawnCreep[WORK, WORK, CARRY, MOVE], newName,
                 { memory: { role: 'miner' } };
         }
     }
