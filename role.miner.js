@@ -12,6 +12,7 @@ var roleMiner = {
         }
 
         // Find nearest source and move to it
+        var sources = creep.pos.findClosestByPath(FIND_SOURCES);
         if (!creep.memory.moving && creep.harvest(sources) == ERR_NOT_IN_RANGE) {
             creep.memory.moving = true;
             creep.say('moving');
