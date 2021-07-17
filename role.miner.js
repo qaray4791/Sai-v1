@@ -24,9 +24,7 @@ var roleMiner = {
 
         if (creep.memory.moving) {
             var sources = creep.pos.findClosestByPath(FIND_SOURCES);
-            if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
-            }
+            creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
         }
         else {
             // Build a container if there isn't already one there
@@ -36,13 +34,13 @@ var roleMiner = {
 
             // If one is there, then work on building it, then filling it
             if (canBuildContainer == ERR_INVALID_TARGET && (target)) {
-                if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
-                    creep.memory.building = false;
+                if (creep.memory.waiting && creep.store[RESOURCE_ENERGY] == 0) {
+                    creep.memory.waiting = false;
                     creep.say('🔄 harvest');
                 }
-                if (!creep.memory.building && creep.store.getFreeCapacity() == 0) {
-                    creep.memory.building = true;
-                    creep.say('🚧 build');
+                if (!creep.memory.waiting && creep.store.getFreeCapacity() == 0) {
+                    creep.memory.waiting = true;
+                    creep.say('🚧 wait');
                 }
                 if (creep.memory.building) {
                     var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);

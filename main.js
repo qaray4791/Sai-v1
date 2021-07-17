@@ -27,6 +27,7 @@ module.exports.loop = function () {
 
     for (let spawn of spawns) {
         var spawnName = spawn.name;
+        var spawnPos = spawn.pos;
         // simply here to prove it's working
         console.log('-------------------------------------------------------------------------------');
         console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
@@ -62,6 +63,7 @@ module.exports.loop = function () {
     console.log('Needs Energy: ' + taskStructures.length);
     console.log('Needs Repair: ' + taskRepairs.length);
     console.log('Needs Built: ' + taskSites.length);
+    console.log('----CREEPS----');
 
     // Determine desired creep roles and number of each based on Room Controller Level
 
@@ -72,23 +74,16 @@ module.exports.loop = function () {
         var desiredHaulers = 0;
     }
 
-    // RC2: Build extensions and then, once built, create miner and hauler
+    // RC2: More workers to fill spawn and setup static mining and get to RC3 as quickly as possible
     if (roomControllerLevel == 2) {
-        if (numberExtensions.length < 5) {
-            var desiredWorkers = 6;
-            var desiredMiners = 0;
-            var desiredHaulers = 0;
-        }
-        if (numberExtensions.length == 5) {
-            var desiredWorkers = 4;
-            var desiredMiners = 1;
-            var desiredHaulers = 1;
-        }
+        var desiredWorkers = 4;
+        var desiredMiners = 1;
+        var desiredHaulers = 1;
     }
 
     // RC3: Prepare for war
     // Will lower levels of non essential creeps until hostiles are gone
-    if (roomControllerLevel > 2) {
+    if (roomControllerLevel == 3) {
         if (enemyAtTheGate.length > 0) {
             console.log((enemyAtTheGate.length * 3) + ' Minutemen being spawned!');
             var desiredMinutemen = 3 * (enemyAtTheGate.length);
@@ -101,6 +96,16 @@ module.exports.loop = function () {
             var desiredMiners = 1;
             var desiredHaulers = 1;
         }
+    }
+
+    // Construct extensions based on spawn position once you hit RC2
+    if (roomControllerLevel > 1) {
+        roomName.createConstructionSite(spawnPos.x, (spawnPos.y + 2), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x - 2), (spawnPos.y + 2), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x + 2), (spawnPos.y + 2), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x - 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x + 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
+
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
@@ -120,13 +125,13 @@ module.exports.loop = function () {
     // Confirms there are the desired number of workers built first
     var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
     if (miners.length < desiredMiners &&
-        workers.length == desiredWorkers) {
+        (workers.length == desiredWorkers || workers.length > desiredWorkers)) {
         var newName = 'Miner' + Game.time;
-        var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE], newName,
+        var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, WORK, CARRY, MOVE, MOVE], newName,
             { memory: { role: 'miner', dryRun: true } });
         if (canSpawnMiner == 0) {
             console.log('Spawning new miner: ' + newName);
-            Game.spawns[spawnName].spawnCreep[WORK, WORK, WORK, WORK, WORK, MOVE], newName,
+            Game.spawns[spawnName].spawnCreep[WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE], newName,
                 { memory: { role: 'miner' } };
         }
     }
@@ -136,7 +141,7 @@ module.exports.loop = function () {
     var haulers = _.filter(Game.creeps, (creep) => creep.memory.role == 'hauler');
     if (haulers.length < desiredHaulers &&
         miners.length == desiredMiners &&
-        workers.length == desiredWorkers) {
+        (workers.length == desiredWorkers || workers.length > desiredWorkers)) {
         var newName = 'Hauler' + Game.time;
         var canSpawnHauler = Game.spawns[spawnName].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], newName,
             { memory: { role: 'hauler', dryRun: true } });
