@@ -1,4 +1,5 @@
 var roleMiner = require('role.miner');
+var roleHauler = require('role.hauler');
 
 module.exports.loop = function () {
 
@@ -42,10 +43,10 @@ module.exports.loop = function () {
     // Determine desired creep roles and number of each based on Room Controller Level
     // RC1: We just want to start static mining and hauling
     if (roomControllerLevel == 1) {
-        var desiredMiners = 1;
-        // var desiredHaulers = 1;
+        var desiredMiners = 3;
+        var desiredHaulers = 1;
     }
-
+    
     // Spawn desired number of miners based on Room Controller Level
     var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
     if (miners.length < desiredMiners) {
@@ -59,11 +60,29 @@ module.exports.loop = function () {
         }
     }
 
+    // Spawn desired number of haulers based on Room Controller Level.
+    // Confirms there are the desired number of miners built first
+    var haulers = _.filter(Game.creeps, (creep) => creep.memory.role == 'hauler');
+    console.log(haulers.length && miners.length == desiredMiners);
+    if (haulers.length < desiredHaulers) {
+        var newName = 'Hauler' + Game.time;
+        var canSpawnHauler = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
+            { memory: { role: 'hauler', dryRun: true } });
+        if (canSpawnHauler == 0) {
+            console.log('Spawning new hauler: ' + newName);
+            Game.spawns[spawnName].spawnCreep[WORK, CARRY, MOVE, MOVE], newName,
+                { memory: { role: 'hauler' } };
+        }
+    }
+
     // Run role modules based on creeps memory.role value
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
         if (creep.memory.role == 'miner') {
             roleMiner.run(creep);
+        }
+        if (creep.memory.role == 'hauler') {
+            roleHauler.run(creep);
         }
     }
 }

@@ -34,10 +34,10 @@ var roleMiner = {
             // Build a container if there isn't already one there
             var canBuildContainer = creep.pos.createConstructionSite(STRUCTURE_CONTAINER);
             var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
-            console.log(target.progress +  ' of ' + target.progressTotal);
+
 
             // If one is there, then work on building it, then filling it
-            if (canBuildContainer == ERR_INVALID_TARGET && (target.progress < target.progressTotal)) {
+            if (canBuildContainer == ERR_INVALID_TARGET && (target)) {
                 if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
                     creep.memory.building = false;
                     creep.say('🔄 harvest');
@@ -56,10 +56,6 @@ var roleMiner = {
                     creep.harvest(source);
                 }
             }
-            if (canBuildContainer == ERR_INVALID_TARGET && (target.progress == target.progressTotal)) {
-                console.log('container done');
-            }
-            
         }
     }
 }
