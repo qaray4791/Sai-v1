@@ -30,20 +30,31 @@ module.exports.loop = function () {
         console.log('There are ' + enemyAtTheGate.length + ' enemies at the gate!');
     }
 
+    var numberExtensions = roomName.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_EXTENSION);
+        }
+    });
+
     // Determine desired creep roles and number of each based on Room Controller Level
 
     // RC1: Build workers to fill spawn and get to RC2 as quickly as possible.
     if (roomControllerLevel == 1) {
-        var desiredWorkers = 1;
+        var desiredWorkers = 2;
         var desiredMiners = 0;
         var desiredHaulers = 0;
     }
 
-    // RC2: ???
-    if (roomControllerLevel > 1) {
-        var desiredWorkers = 1;
+    // RC2: Build extensions and then, once built, create miner and hauler
+    if (roomControllerLevel > 1 && numberExtensions < 5) {
+        var desiredWorkers = 4;
         var desiredMiners = 0;
         var desiredHaulers = 0;
+    }
+    if (roomControllerLevel > 1 && numberExtensions == 5); {
+        var desiredWorkers = 4;
+        var desiredMiners = 1;
+        var desiredHaulers = 1;
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
@@ -63,7 +74,7 @@ module.exports.loop = function () {
     // Confirms there are the desired number of workers built first
     var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
     if (miners.length < desiredMiners &&
-        upgraders.length == desiredUpgraders) {
+        workers.length == desiredWorkers) {
         var newName = 'Miner' + Game.time;
         var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, CARRY, MOVE], newName,
             { memory: { role: 'miner', dryRun: true } });
@@ -79,7 +90,7 @@ module.exports.loop = function () {
     var haulers = _.filter(Game.creeps, (creep) => creep.memory.role == 'hauler');
     if (haulers.length < desiredHaulers &&
         miners.length == desiredMiners &&
-        upgraders.length == desiredUpgraders) {
+        workers.length == desiredWorkers) {
         var newName = 'Hauler' + Game.time;
         var canSpawnHauler = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
             { memory: { role: 'hauler', dryRun: true } });

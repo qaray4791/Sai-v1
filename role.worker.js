@@ -16,32 +16,32 @@ var roleWorker = {
             creep.say('⚡ work');
         }
 
-        if (creep.memory.working) {
+         // find things that need energy
+         var targetStructures = creep.room.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_EXTENSION ||
+                    structure.structureType == STRUCTURE_SPAWN ||
+                    structure.structureType == STRUCTURE_CONTAINER ||
+                    structure.structureType == STRUCTURE_TOWER) &&
+                    structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }
+        });
 
-            // find things that need energy
-            var targetStructures = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_EXTENSION ||
-                        structure.structureType == STRUCTURE_SPAWN ||
-                        structure.structureType == STRUCTURE_CONTAINER ||
-                        structure.structureType == STRUCTURE_TOWER) &&
-                        structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                }
-            });
+        // find things that need to be built
+        var targetSites = creep.room.find(FIND_CONSTRUCTION_SITES);
 
-            // find things that need to be built
-            var targetSites = creep.room.find(FIND_CONSTRUCTION_SITES);
+        // find things that need repair
+        var targetRepairs = creep.room.find(FIND_STRUCTURES, {
+            filter: object => object.hits < object.hitsMax
+        });
+        targetRepairs.sort((a, b) => a.hits - b.hits);
 
-            // find things that need repair
-            var targetRepairs = creep.room.find(FIND_STRUCTURES, {
-                filter: object => object.hits < object.hitsMax
-            });
-            targetRepairs.sort((a, b) => a.hits - b.hits);
+        console.log('----TASKS----');
+        console.log('Needs Energy: ' + targetStructures.length);
+        console.log('Needs Repair: ' + targetRepairs.length);
+        console.log('Needs Built: ' + targetSites.length);      
 
-            console.log('----TASKS----');
-            console.log('Needs Energy: ' + targetStructures.length);
-            console.log('Needs Repair: ' + targetRepairs.length);
-            console.log('Needs Built: ' + targetSites.length);            
+        if (creep.memory.working) {   
 
             // if things need energy go fill them
             if (targetStructures.length) {
