@@ -74,7 +74,7 @@ module.exports.loop = function () {
     // RC2: Build extensions and then, once built, create miner and hauler
     if (roomControllerLevel == 2) {
         if (numberExtensions.length < 5) {
-            var desiredWorkers = 4;
+            var desiredWorkers = 6;
             var desiredMiners = 0;
             var desiredHaulers = 0;
         }

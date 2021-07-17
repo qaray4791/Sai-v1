@@ -46,10 +46,12 @@ var roleMiner = {
                 }
                 if (creep.memory.building) {
                     var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+                    console.log(creep.name + ' is building container');
                     creep.build(target);
                 }
                 else {
                     var source = creep.pos.findClosestByPath(FIND_SOURCES);
+                    console.log(creep.name + ' is harvesting source');
                     creep.harvest(source);
                 }
             }

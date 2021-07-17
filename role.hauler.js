@@ -14,6 +14,7 @@ var roleHauler = {
                 }
             });
             if (targets.length > 0) {
+                console.log(creep.name + ' is withdrawing from container');
                 if (creep.withdraw(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], { visualizePathStyle: { stroke: '#ffaa00' } });
                 }
@@ -29,6 +30,7 @@ var roleHauler = {
                 }
             });
             if (energyDump.length > 0) {
+                console.log(creep.name + ' is filling things');
                 if (creep.transfer(energyDump[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(energyDump[0], { visualizePathStyle: { stroke: '#ffffff'} });
                 }
