@@ -30,29 +30,18 @@ module.exports.loop = function () {
         console.log('There are ' + enemyAtTheGate.length + ' enemies at the gate!');
     }
 
-
-    // Clear dead creeps from memory
-    if (Game.time % 100 == 0) {
-        for (var name in Memory.creeps) {
-            if (!Game.creeps[name]) {
-                delete Memory.creeps[name];
-                console.log('Clearing non-existing creep memory:', name);
-            }
-        }
-    }
-
     // Determine desired creep roles and number of each based on Room Controller Level
 
     // RC1: Build workers to fill spawn and get to RC2 as quickly as possible.
     if (roomControllerLevel == 1) {
-        var desiredWorkers = 5;
+        var desiredWorkers = 2;
         var desiredMiners = 0;
         var desiredHaulers = 0;
     }
 
     // RC2: ???
     if (roomControllerLevel > 1) {
-        var desiredWorkers = 2;
+        var desiredWorkers = 4;
         var desiredMiners = 0;
         var desiredHaulers = 0;
     }
@@ -112,6 +101,16 @@ module.exports.loop = function () {
         }
         if (creep.memory.role == 'hauler') {
             roleHauler.run(creep);
+        }
+    }
+
+    // Clear dead creeps from memory
+    if (Game.time % 100 == 0) {
+        for (var name in Memory.creeps) {
+            if (!Game.creeps[name]) {
+                delete Memory.creeps[name];
+                console.log('Clearing non-existing creep memory:', name);
+            }
         }
     }
 }
