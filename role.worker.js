@@ -16,8 +16,8 @@ var roleWorker = {
             creep.say('⚡ work');
         }
 
-         // find things that need energy
-         var targetStructures = creep.room.find(FIND_STRUCTURES, {
+        // find things that need energy
+        var targetStructures = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION ||
                     structure.structureType == STRUCTURE_SPAWN ||
@@ -41,7 +41,7 @@ var roleWorker = {
         // console.log('Needs Repair: ' + targetRepairs.length);
         // console.log('Needs Built: ' + targetSites.length);      
 
-        if (creep.memory.working) {   
+        if (creep.memory.working) {
 
             // if things need energy go fill them
             if (targetStructures.length) {
@@ -63,7 +63,7 @@ var roleWorker = {
             if (!targetStructures.length && !targetRepairs.length && targetSites.length) {
                 console.log(creep.name + ' is building things');
                 if (creep.build(targetSites[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targetSites[0], { visualizePathStyle: { stroke: '#ffffff' } });                    
+                    creep.moveTo(targetSites[0], { visualizePathStyle: { stroke: '#ffffff' } });
                 }
             }
 
@@ -72,17 +72,22 @@ var roleWorker = {
                 console.log(creep.name + ' is upgrading controller');
                 if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
-                    
+
                 }
             }
         }
 
         // if there are no tasks and creep has no energy to upgrade controller it goes to harvest
         else {
-            var sources = creep.pos.findClosestByPath(FIND_SOURCES);
-            console.log(creep.name + ' is harvesting');
-            if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });                
+            if (creep.spawning) {
+                console.log(creep.name + ' is spawning');
+            }
+            else {
+                var sources = creep.pos.findClosestByPath(FIND_SOURCES);
+                console.log(creep.name + ' is harvesting');
+                if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
+                }
             }
         }
     }
