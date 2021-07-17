@@ -36,16 +36,16 @@ var roleWorker = {
         });
         targetRepairs.sort((a, b) => a.hits - b.hits);
 
-        console.log('----TASKS----');
-        console.log('Needs Energy: ' + targetStructures.length);
-        console.log('Needs Repair: ' + targetRepairs.length);
-        console.log('Needs Built: ' + targetSites.length);      
+        // console.log('----TASKS----');
+        // console.log('Needs Energy: ' + targetStructures.length);
+        // console.log('Needs Repair: ' + targetRepairs.length);
+        // console.log('Needs Built: ' + targetSites.length);      
 
         if (creep.memory.working) {   
 
             // if things need energy go fill them
             if (targetStructures.length) {
-                console.log('Creep ' + creep.name + ' is filling things');
+                console.log(creep.name + ' is filling things');
                 if (creep.transfer(targetStructures[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targetStructures[0], { visualizePathStyle: { stroke: '#ffffff' } });
                 }
@@ -53,7 +53,7 @@ var roleWorker = {
 
             // if things need repair go repair them
             if (!targetStructures.length && targetRepairs.length) {
-                console.log('Creep ' + creep.name + ' is repairing things');
+                console.log(creep.name + ' is repairing things');
                 if (creep.repair(targetRepairs[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targetRepairs[0], { visualizePathStyle: { stroke: '#ffffff' } });
                 }
@@ -61,7 +61,7 @@ var roleWorker = {
 
             // if things need building go build them
             if (!targetStructures.length && !targetRepairs.length && targetSites.length) {
-                console.log('Creep ' + creep.name + ' is building things');
+                console.log(creep.name + ' is building things');
                 if (creep.build(targetSites[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targetSites[0], { visualizePathStyle: { stroke: '#ffffff' } });                    
                 }
@@ -69,7 +69,7 @@ var roleWorker = {
 
             // if there are no tasks go upgrade the controller
             if (!targetStructures.length && !targetRepairs.length && !targetSites.length) {
-                console.log('Creep ' + creep.name + ' is upgrading controller');
+                console.log(creep.name + ' is upgrading controller');
                 if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
                     
@@ -80,7 +80,7 @@ var roleWorker = {
         // if there are no tasks and creep has no energy to upgrade controller it goes to harvest
         else {
             var sources = creep.pos.findClosestByPath(FIND_SOURCES);
-            console.log('Creep ' + creep.name + ' is harvesting');
+            console.log(creep.name + ' is harvesting');
             if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });                
             }

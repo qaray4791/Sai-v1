@@ -18,10 +18,16 @@ module.exports.loop = function () {
         }
     });
 
+    var numberExtensions = roomName.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_EXTENSION);
+        }
+    });
+
     for (let spawn of spawns) {
         var spawnName = spawn.name;
         // simply here to prove it's working
-        console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' -- Spawn Name: ' + spawnName + ' -- Tick: ' + Game.time);
+        console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
     }
 
     // Detect hostile creeps in room and raise the alarm
@@ -30,11 +36,30 @@ module.exports.loop = function () {
         console.log('There are ' + enemyAtTheGate.length + ' enemies at the gate!');
     }
 
-    var numberExtensions = roomName.find(FIND_STRUCTURES, {
+    // find things that need energy
+    var taskStructures = roomName.find(FIND_STRUCTURES, {
         filter: (structure) => {
-            return (structure.structureType == STRUCTURE_EXTENSION);
+            return (structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_SPAWN ||
+                structure.structureType == STRUCTURE_CONTAINER ||
+                structure.structureType == STRUCTURE_TOWER) &&
+                structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
         }
     });
+
+    // find things that need to be built
+    var taskSites = roomName.find(FIND_CONSTRUCTION_SITES);
+
+    // find things that need repair
+    var taskRepairs = roomName.find(FIND_STRUCTURES, {
+        filter: object => object.hits < object.hitsMax
+    });
+    taskRepairs.sort((a, b) => a.hits - b.hits);
+
+    console.log('----TASKS----');
+    console.log('Needs Energy: ' + taskStructures.length);
+    console.log('Needs Repair: ' + taskRepairs.length);
+    console.log('Needs Built: ' + taskSites.length);   
 
     // Determine desired creep roles and number of each based on Room Controller Level
 
@@ -46,15 +71,17 @@ module.exports.loop = function () {
     }
 
     // RC2: Build extensions and then, once built, create miner and hauler
-    if (roomControllerLevel > 1 && numberExtensions < 5) {
-        var desiredWorkers = 4;
-        var desiredMiners = 0;
-        var desiredHaulers = 0;
-    }
-    if (roomControllerLevel > 1 && numberExtensions == 5); {
-        var desiredWorkers = 4;
-        var desiredMiners = 1;
-        var desiredHaulers = 1;
+    if (roomControllerLevel == 2) {
+        if (numberExtensions.length < 5) {
+            var desiredWorkers = 4;
+            var desiredMiners = 0;
+            var desiredHaulers = 0;
+        }
+        if (numberExtensions.length == 5) {
+            var desiredWorkers = 4;
+            var desiredMiners = 1;
+            var desiredHaulers = 1;
+        }
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
