@@ -1,3 +1,4 @@
+var roleWorker = require('role.upgrader');
 var roleMiner = require('role.miner');
 var roleHauler = require('role.hauler');
 
@@ -41,15 +42,39 @@ module.exports.loop = function () {
     }
 
     // Determine desired creep roles and number of each based on Room Controller Level
-    // RC1: We just want to start static mining and hauling
+
+    // RC1: Build workers to fill spawn and get to RC2 as quickly as possible.
     if (roomControllerLevel == 1) {
-        var desiredMiners = 3;
-        var desiredHaulers = 1;
+        var desiredWorkers = 2;
+        var desiredMiners = 0;
+        var desiredHaulers = 0;
+    }
+
+    // RC2: ???
+    if (roomControllerLevel > 1) {
+        var desiredWorkers = 2;
+        var desiredMiners = 0;
+        var desiredHaulers = 0;
+    }
+
+    // Spawn desired number of upgraders based on Room Controller Level
+    var workers = _.filter(Game.creeps, (creep) => creep.memory.role == 'worker');
+    if (workers.length < desiredWorkers) {
+        var newName = 'Worker' + Game.time;
+        var canSpawnWorker = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
+            { memory: { role: 'worker', dryRun: true } });
+        if (canSpawnWorker == 0) {
+            console.log('Spawning new worker: ' + newName);
+            Game.spawns[spawnName].spawnCreep[WORK, CARRY, MOVE, MOVE], newName,
+                { memory: { role: 'worker' } };
+        }
     }
 
     // Spawn desired number of miners based on Room Controller Level
+    // Confirms there are the desired number of workers built first
     var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
-    if (miners.length < desiredMiners) {
+    if (miners.length < desiredMiners &&
+        upgraders.length == desiredUpgraders) {
         var newName = 'Miner' + Game.time;
         var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, CARRY, MOVE], newName,
             { memory: { role: 'miner', dryRun: true } });
@@ -61,9 +86,11 @@ module.exports.loop = function () {
     }
 
     // Spawn desired number of haulers based on Room Controller Level.
-    // Confirms there are the desired number of miners built first
+    // Confirms there are the desired number of miners and workers built first
     var haulers = _.filter(Game.creeps, (creep) => creep.memory.role == 'hauler');
-    if (haulers.length < desiredHaulers && miners.length == desiredMiners) {
+    if (haulers.length < desiredHaulers &&
+        miners.length == desiredMiners &&
+        upgraders.length == desiredUpgraders) {
         var newName = 'Hauler' + Game.time;
         var canSpawnHauler = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
             { memory: { role: 'hauler', dryRun: true } });
@@ -77,6 +104,9 @@ module.exports.loop = function () {
     // Run role modules based on creeps memory.role value
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
+        if (creep.memory.role == 'worker') {
+            roleWorker.run(creep);
+        }
         if (creep.memory.role == 'miner') {
             roleMiner.run(creep);
         }
