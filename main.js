@@ -27,6 +27,7 @@ module.exports.loop = function () {
     for (let spawn of spawns) {
         var spawnName = spawn.name;
         // simply here to prove it's working
+        console.log('-------------------------------------------------------------------------------');
         console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
     }
 
@@ -59,8 +60,8 @@ module.exports.loop = function () {
     console.log('----TASKS----');
     console.log('Needs Energy: ' + taskStructures.length);
     console.log('Needs Repair: ' + taskRepairs.length);
-    console.log('Needs Built: ' + taskSites.length);   
-
+    console.log('Needs Built: ' + taskSites.length);
+    
     // Determine desired creep roles and number of each based on Room Controller Level
 
     // RC1: Build workers to fill spawn and get to RC2 as quickly as possible.
@@ -103,11 +104,11 @@ module.exports.loop = function () {
     if (miners.length < desiredMiners &&
         workers.length == desiredWorkers) {
         var newName = 'Miner' + Game.time;
-        var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, CARRY, MOVE], newName,
+        var canSpawnMiner = Game.spawns[spawnName].spawnCreep([WORK, WORK, WORK, WORK, WORK, MOVE], newName,
             { memory: { role: 'miner', dryRun: true } });
         if (canSpawnMiner == 0) {
             console.log('Spawning new miner: ' + newName);
-            Game.spawns[spawnName].spawnCreep[WORK, WORK, CARRY, MOVE], newName,
+            Game.spawns[spawnName].spawnCreep[WORK, WORK, WORK, WORK, WORK, MOVE], newName,
                 { memory: { role: 'miner' } };
         }
     }
@@ -119,11 +120,11 @@ module.exports.loop = function () {
         miners.length == desiredMiners &&
         workers.length == desiredWorkers) {
         var newName = 'Hauler' + Game.time;
-        var canSpawnHauler = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
+        var canSpawnHauler = Game.spawns[spawnName].spawnCreep([WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], newName,
             { memory: { role: 'hauler', dryRun: true } });
         if (canSpawnHauler == 0) {
             console.log('Spawning new hauler: ' + newName);
-            Game.spawns[spawnName].spawnCreep[WORK, CARRY, MOVE, MOVE], newName,
+            Game.spawns[spawnName].spawnCreep[WORK, WORK, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], newName,
                 { memory: { role: 'hauler' } };
         }
     }

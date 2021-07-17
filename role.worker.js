@@ -16,12 +16,23 @@ var roleWorker = {
             creep.say('⚡ work');
         }
 
+        for (let room in Game.rooms) {
+            var roomName = Game.rooms[room];
+            var roomControllerLevel = (roomName.controller.level);
+        }
+
+        var numberContainers = roomName.find(FIND_STRUCTURES, {
+            filter: (structure) => {
+                return (structure.structureType == STRUCTURE_CONTAINER);
+            }
+        });
+
         // find things that need energy
         var targetStructures = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) => {
                 return (structure.structureType == STRUCTURE_EXTENSION ||
                     structure.structureType == STRUCTURE_SPAWN ||
-                    structure.structureType == STRUCTURE_CONTAINER ||
+                    // structure.structureType == STRUCTURE_CONTAINER ||
                     structure.structureType == STRUCTURE_TOWER) &&
                     structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             }
@@ -83,11 +94,26 @@ var roleWorker = {
                 console.log(creep.name + ' is spawning');
             }
             else {
-                var sources = creep.pos.findClosestByPath(FIND_SOURCES);
-                console.log(creep.name + ' is harvesting');
-                if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
+                if (!numberContainers.length) {
+                    var sources = creep.pos.findClosestByPath(FIND_SOURCES);
+                    console.log(creep.name + ' is harvesting from source');
+                    if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
+                    }
                 }
+                else {
+                    var container = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+                        filter: (structure) => {
+                            return (structure.structureType == STRUCTURE_CONTAINER &&
+                                structure.store.getUsedCapacity(RESOURCE_ENERGY) > 0);
+                        }
+                    });
+                    console.log(creep.name + ' is harvesting from container');
+                    if (creep.withdraw(container) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(container, { visualizePathStyle: { stroke: '#ffaa00' } });
+                    }
+                }
+                
             }
         }
     }
