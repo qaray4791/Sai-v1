@@ -1,6 +1,7 @@
 var roleWorker = require('role.worker');
 var roleMiner = require('role.miner');
 var roleHauler = require('role.hauler');
+const roleMinuteman = require('role.minuteman');
 
 module.exports.loop = function () {
 
@@ -61,7 +62,7 @@ module.exports.loop = function () {
     console.log('Needs Energy: ' + taskStructures.length);
     console.log('Needs Repair: ' + taskRepairs.length);
     console.log('Needs Built: ' + taskSites.length);
-    
+
     // Determine desired creep roles and number of each based on Room Controller Level
 
     // RC1: Build workers to fill spawn and get to RC2 as quickly as possible.
@@ -79,6 +80,23 @@ module.exports.loop = function () {
             var desiredHaulers = 0;
         }
         if (numberExtensions.length == 5) {
+            var desiredWorkers = 4;
+            var desiredMiners = 1;
+            var desiredHaulers = 1;
+        }
+    }
+
+    // RC3: Prepare for war
+    // Will lower levels of non essential creeps until hostiles are gone
+    if (roomControllerLevel > 2) {
+        if (enemyAtTheGate.length > 0) {
+            console.log((enemyAtTheGate.length * 3) + ' Minutemen being spawned!');
+            var desiredMinutemen = 3 * (enemyAtTheGate.length);
+            var desiredWorkers = 2;
+            var desiredMiners = 1;
+            var desiredHaulers = 1;
+        }
+        if (enemyAtTheGate.length == 0) {
             var desiredWorkers = 4;
             var desiredMiners = 1;
             var desiredHaulers = 1;
@@ -129,6 +147,21 @@ module.exports.loop = function () {
         }
     }
 
+    // Spawn desired number of minutemen based on number of hostiles in room
+    // Room Controller Level must be 3 or higher
+    var minutemen = _.filter(Game.creeps, (creep) => creep.memory.role == 'grunt');
+    if (enemyAtTheGate.length > 0 && minutemen.length < desiredMinutemen) {
+        var newName = 'Minuteman' + Game.time;
+        var canSpawnMinuteman = Game.spawns[spawnName].spawnCreep([ATTACK, ATTACK, MOVE, MOVE], newName,
+            { memory: { role: 'minuteman', dryRun: true } });
+        // console.log(canSpawnMinuteman);
+        if (canSpawnMinuteman == 0) {
+            console.log('Spawning new minuteman: ' + newName);
+            Game.spawns[spawnName].spawnCreep([ATTACK, ATTACK, MOVE, MOVE], newName,
+                { memory: { role: 'minuteman', debug: false } });
+        }
+    }
+
     // Run role modules based on creeps memory.role value
     for (var name in Game.creeps) {
         var creep = Game.creeps[name];
@@ -140,6 +173,9 @@ module.exports.loop = function () {
         }
         if (creep.memory.role == 'hauler') {
             roleHauler.run(creep);
+        }
+        if (creep.memory.role == 'minuteman') {
+            roleMinuteman.run(creep);
         }
     }
 
