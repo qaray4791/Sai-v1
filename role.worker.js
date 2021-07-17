@@ -32,9 +32,9 @@ var roleWorker = {
             });
             targetRepairs.sort((a, b) => a.hits - b.hits);
             
-            console.log('targetStructures: ' + targetStructures.length);
-            console.log('targetRepairs: ' + targetRepairs.length);
-            console.log('targetSites: ' + targetSites.length);            
+            // console.log('targetStructures: ' + targetStructures.length);
+            // console.log('targetRepairs: ' + targetRepairs.length);
+            // console.log('targetSites: ' + targetSites.length);            
 
             if (targetStructures.length > 0) {
                 if (creep.transfer(targetStructures[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
