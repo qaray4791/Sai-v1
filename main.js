@@ -34,16 +34,16 @@ module.exports.loop = function () {
 
     // RC1: Build workers to fill spawn and get to RC2 as quickly as possible.
     if (roomControllerLevel == 1) {
-        var desiredWorkers = 2;
+        var desiredWorkers = 1;
         var desiredMiners = 0;
         var desiredHaulers = 0;
     }
 
     // RC2: ???
     if (roomControllerLevel > 1) {
-        var desiredWorkers = 4;
-        var desiredMiners = 1;
-        var desiredHaulers = 1;
+        var desiredWorkers = 1;
+        var desiredMiners = 0;
+        var desiredHaulers = 0;
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
