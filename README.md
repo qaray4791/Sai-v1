@@ -1,4 +1,4 @@
-# Sai or Screeps Artificial Intelligence
+# Screeps Artificial Intelligence
 
 npm install if you want the vs code autocomplete to work
 

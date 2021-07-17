@@ -42,8 +42,8 @@ module.exports.loop = function () {
     // RC2: ???
     if (roomControllerLevel > 1) {
         var desiredWorkers = 4;
-        var desiredMiners = 0;
-        var desiredHaulers = 0;
+        var desiredMiners = 1;
+        var desiredHaulers = 1;
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
