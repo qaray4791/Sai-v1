@@ -22,8 +22,6 @@ var roleMiner = {
             creep.say('here');
         }
 
-        console.log('Moving? ' + creep.memory.moving);
-
         if (creep.memory.moving) {
             var sources = creep.pos.findClosestByPath(FIND_SOURCES);
             if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
@@ -46,7 +44,6 @@ var roleMiner = {
                     creep.memory.building = true;
                     creep.say('🚧 build');
                 }
-                console.log('building? ' + creep.memory.building);
                 if (creep.memory.building) {
                     var target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
                     creep.build(target);
