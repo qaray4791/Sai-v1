@@ -20,6 +20,7 @@ module.exports.loop = function () {
         }
     });
 
+    // Find how many extensions there are in the room
     var numberExtensions = roomName.find(FIND_STRUCTURES, {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_EXTENSION);
@@ -29,9 +30,12 @@ module.exports.loop = function () {
     for (let spawn of spawns) {
         var spawnName = spawn.name;
         var spawnPos = spawn.pos;
-        // simply here to prove it's working
+        // simply here to prove it's working and debugging purposes if needed. Comment out when not needed. Probably not useful for multiple rooms due to how it would display.
+        // TODO: Set this up in a way where user can input which room they want to view and debug when there are multiple rooms.
         console.log('-------------------------------------------------------------------------------');
-        console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' // ' + roomName.controller.progress + '/' + roomName.controller.progressTotal + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
+        console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' // ' 
+        + roomName.controller.progress + '/' + roomName.controller.progressTotal 
+        + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
     }
 
     // Detect hostile creeps in room and raise the alarm
@@ -60,6 +64,7 @@ module.exports.loop = function () {
     });
     taskRepairs.sort((a, b) => a.hits - b.hits);
 
+    // Display the number of each type of tasks
     console.log('----TASKS----');
     console.log('Needs Energy: ' + taskStructures.length);
     console.log('Needs Repair: ' + taskRepairs.length);
