@@ -81,6 +81,15 @@ module.exports.loop = function () {
     }
 
     // RC2: More workers to fill spawn and setup static mining and get to RC3 as quickly as possible
+    // Construct extensions based on spawn position once you hit RC2
+    if (roomControllerLevel > 1) {
+        roomName.createConstructionSite(spawnPos.x, (spawnPos.y + 2), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x - 2), (spawnPos.y + 2), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x + 2), (spawnPos.y + 2), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x - 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
+        roomName.createConstructionSite((spawnPos.x + 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
+
+    }
     if (roomControllerLevel == 2) {
         var desiredWorkers = 4;
         var desiredUpgraders = 2;
@@ -88,9 +97,21 @@ module.exports.loop = function () {
         var desiredHaulers = 0;
     }
 
-    // RC3: Prepare for war
+    // RC3: Get tower placed and built
+    // Place tower at RC3 relative to spawn
+    if (roomControllerLevel > 2) {
+        roomName.createConstructionSite(spawnPos.x, (spawnPos.y - 3), STRUCTURE_TOWER);
+    }
+    if (roomControllerLevel == 2) {
+        var desiredWorkers = 4;
+        var desiredUpgraders = 2;
+        var desiredMiners = 0;
+        var desiredHaulers = 0;
+    }
+
+    // RC4: Prepare for war
     // Will lower levels of non essential creeps until hostiles are gone
-    if (roomControllerLevel == 3) {
+    if (roomControllerLevel == 4) {
         if (enemyAtTheGate.length > 0) {
             console.log((enemyAtTheGate.length * 3) + ' Minutemen being spawned!');
             var desiredMinutemen = 3 * (enemyAtTheGate.length);
@@ -105,21 +126,6 @@ module.exports.loop = function () {
             var desiredMiners = 1;
             var desiredHaulers = 1;
         }
-    }
-
-    // Construct extensions based on spawn position once you hit RC2
-    if (roomControllerLevel > 1) {
-        roomName.createConstructionSite(spawnPos.x, (spawnPos.y + 2), STRUCTURE_EXTENSION);
-        roomName.createConstructionSite((spawnPos.x - 2), (spawnPos.y + 2), STRUCTURE_EXTENSION);
-        roomName.createConstructionSite((spawnPos.x + 2), (spawnPos.y + 2), STRUCTURE_EXTENSION);
-        roomName.createConstructionSite((spawnPos.x - 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
-        roomName.createConstructionSite((spawnPos.x + 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
-
-    }
-
-    // Place tower at RC3 relative to spawn
-    if (roomControllerLevel > 2) {
-        roomName.createConstructionSite(spawnPos.x, (spawnPos.y - 3), STRUCTURE_TOWER);
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
