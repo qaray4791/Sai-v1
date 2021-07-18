@@ -1,2 +1,3 @@
 1. Need to work on refactoring code to organize better.
 2. Would like to break spawning code out into it's own file.
+3. Perhaps break out construction out into it's own file as well.

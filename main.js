@@ -31,7 +31,7 @@ module.exports.loop = function () {
         var spawnPos = spawn.pos;
         // simply here to prove it's working
         console.log('-------------------------------------------------------------------------------');
-        console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
+        console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' // ' + roomName.controller.progress + '/' + roomName.controller.progressTotal + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
     }
 
     // Detect hostile creeps in room and raise the alarm

@@ -80,7 +80,7 @@ var roleWorker = {
 
             // if there are no tasks go upgrade the controller
             if (!targetStructures.length && !targetRepairs.length && !targetSites.length) {
-                console.log(creep.name + ' is upgrading controller // progress: ' + creep.room.controller.progress + '/' + creep.room.controller.progressTotal);
+                console.log(creep.name + ' is upgrading controller');
                 if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
 
