@@ -80,7 +80,7 @@ module.exports.loop = function () {
         var desiredHaulers = 0;
     }
 
-    // RC2: More workers to fill spawn and setup static mining and get to RC3 as quickly as possible
+    // RC2
     // Construct extensions based on spawn position once you hit RC2
     if (roomControllerLevel > 1) {
         roomName.createConstructionSite(spawnPos.x, (spawnPos.y + 2), STRUCTURE_EXTENSION);
@@ -90,6 +90,8 @@ module.exports.loop = function () {
         roomName.createConstructionSite((spawnPos.x + 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
 
     }
+    // More workers to fill spawn and build extensions then get to RC3
+    // Add a couple of upgraders so RCL doesn't revert while building occurs
     if (roomControllerLevel == 2) {
         var desiredWorkers = 4;
         var desiredUpgraders = 2;
@@ -102,6 +104,7 @@ module.exports.loop = function () {
     if (roomControllerLevel > 2) {
         roomName.createConstructionSite(spawnPos.x, (spawnPos.y - 3), STRUCTURE_TOWER);
     }
+    // Keep workers and upgraders the same f
     if (roomControllerLevel == 2) {
         var desiredWorkers = 4;
         var desiredUpgraders = 2;
@@ -109,7 +112,7 @@ module.exports.loop = function () {
         var desiredHaulers = 0;
     }
 
-    // RC4: Prepare for war
+    // RC4: Spawn Minutemen if there are hostiles
     // Will lower levels of non essential creeps until hostiles are gone
     if (roomControllerLevel == 4) {
         if (enemyAtTheGate.length > 0) {
