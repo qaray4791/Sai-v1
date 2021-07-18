@@ -23,6 +23,7 @@ var roleMiner = {
         }
 
         if (creep.memory.moving) {
+            console.log(creep.name + ' is moving to source');
             var sources = creep.pos.findClosestByPath(FIND_SOURCES);
             creep.moveTo(sources, { visualizePathStyle: { stroke: '#ffaa00' } });
         }

@@ -76,9 +76,9 @@ module.exports.loop = function () {
 
     // RC2: More workers to fill spawn and setup static mining and get to RC3 as quickly as possible
     if (roomControllerLevel == 2) {
-        var desiredWorkers = 4;
-        var desiredMiners = 1;
-        var desiredHaulers = 1;
+        var desiredWorkers = 6;
+        var desiredMiners = 0;
+        var desiredHaulers = 0;
     }
 
     // RC3: Prepare for war
@@ -92,7 +92,7 @@ module.exports.loop = function () {
             var desiredHaulers = 1;
         }
         if (enemyAtTheGate.length == 0) {
-            var desiredWorkers = 4;
+            var desiredWorkers = 6;
             var desiredMiners = 1;
             var desiredHaulers = 1;
         }

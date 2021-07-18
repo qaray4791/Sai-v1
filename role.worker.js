@@ -72,7 +72,7 @@ var roleWorker = {
 
             // if things need building go build them
             if (!targetStructures.length && !targetRepairs.length && targetSites.length) {
-                console.log(creep.name + ' is building things');
+                console.log(creep.name + ' is building things // progress: ' + targetSites[0].progress + '/' + targetSites[0].progressTotal);
                 if (creep.build(targetSites[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targetSites[0], { visualizePathStyle: { stroke: '#ffffff' } });
                 }
