@@ -77,7 +77,7 @@ module.exports.loop = function () {
 
     // RC2: More workers to fill spawn and setup static mining and get to RC3 as quickly as possible
     if (roomControllerLevel == 2) {
-        var desiredWorkers = 6;
+        var desiredWorkers = 4;
         var desiredUpgraders = 2;
         var desiredMiners = 0;
         var desiredHaulers = 0;
@@ -95,7 +95,7 @@ module.exports.loop = function () {
             var desiredHaulers = 1;
         }
         if (enemyAtTheGate.length == 0) {
-            var desiredWorkers = 6;
+            var desiredWorkers = 4;
             var desiredUpgraders = 2;
             var desiredMiners = 1;
             var desiredHaulers = 1;
@@ -110,6 +110,11 @@ module.exports.loop = function () {
         roomName.createConstructionSite((spawnPos.x - 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
         roomName.createConstructionSite((spawnPos.x + 1), (spawnPos.y + 3), STRUCTURE_EXTENSION);
 
+    }
+
+    // Place tower at RC3 relative to spawn
+    if (roomControllerLevel > 2) {
+        roomName.createConstructionSite(spawnPos.x, (spawnPos.y - 3), STRUCTURE_TOWER);
     }
 
     // Spawn desired number of upgraders based on Room Controller Level
@@ -204,6 +209,27 @@ module.exports.loop = function () {
         }
         if (creep.memory.role == 'minuteman') {
             roleMinuteman.run(creep);
+        }
+    }
+
+    // Get info for towers if they exist and give them instructions
+    var towers = roomName.find(FIND_STRUCTURES, {
+        filter: (s) =>
+            s.structureType == STRUCTURE_TOWER
+    });
+    for (let tower of towers) {
+        if (tower) {
+            var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                filter: (structure) => structure.hits < structure.hitsMax
+            });
+            if (closestDamagedStructure && tower.store[RESOURCE_ENERGY] > 500) {
+                tower.repair(closestDamagedStructure);
+            }
+
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if (closestHostile) {
+                tower.attack(closestHostile);
+            }
         }
     }
 

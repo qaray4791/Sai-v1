@@ -17,12 +17,15 @@ var roleUpgrader = {
         }
 
         if (creep.memory.upgrading) {
-            console.log(creep.name + ' is upgrading controller');
+            console.log(creep.name + ' is upgrading controller // progress: ' + creep.room.controller.progress + '/' + creep.room.controller.progressTotal);
             if (creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(creep.room.controller, { visualizePathStyle: { stroke: '#ffffff' } });
             }
         }
         else {
+            if (creep.spawning) {
+                console.log(creep.name + ' is spawning');
+            }
             var sources = creep.pos.findClosestByPath(FIND_SOURCES);
             console.log(creep.name + ' is harvesting from source');
             if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
