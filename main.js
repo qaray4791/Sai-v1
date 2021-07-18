@@ -1,4 +1,5 @@
 var roleWorker = require('role.worker');
+var roleUpgrader = require('role.upgrader');
 var roleMiner = require('role.miner');
 var roleHauler = require('role.hauler');
 const roleMinuteman = require('role.minuteman');
@@ -77,6 +78,7 @@ module.exports.loop = function () {
     // RC2: More workers to fill spawn and setup static mining and get to RC3 as quickly as possible
     if (roomControllerLevel == 2) {
         var desiredWorkers = 6;
+        var desiredUpgraders = 2;
         var desiredMiners = 0;
         var desiredHaulers = 0;
     }
@@ -88,11 +90,13 @@ module.exports.loop = function () {
             console.log((enemyAtTheGate.length * 3) + ' Minutemen being spawned!');
             var desiredMinutemen = 3 * (enemyAtTheGate.length);
             var desiredWorkers = 2;
+            var desiredUpgraders = 1;
             var desiredMiners = 1;
             var desiredHaulers = 1;
         }
         if (enemyAtTheGate.length == 0) {
             var desiredWorkers = 6;
+            var desiredUpgraders = 2;
             var desiredMiners = 1;
             var desiredHaulers = 1;
         }
@@ -118,6 +122,22 @@ module.exports.loop = function () {
             console.log('Spawning new worker: ' + newName);
             Game.spawns[spawnName].spawnCreep[WORK, CARRY, MOVE, MOVE], newName,
                 { memory: { role: 'worker' } };
+        }
+    }
+
+    // Spawn desired numbers of upgraders based on Room Controller Level
+    // Will make sure the number of desired harvesters exist before spawning new upgraders
+    var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+    if (upgraders.length < desiredUpgraders &&
+        workers.length == desiredWorkers) {
+        var newName = 'Upgrader' + Game.time;
+        var canSpawnUpgrader = Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
+            { memory: { role: 'upgrader', dryRun: true } });
+        // console.log(canSpawnUpgrader);
+        if (canSpawnUpgrader == 0) {
+            console.log('Spawning new upgrader: ' + newName);
+            Game.spawns[spawnName].spawnCreep([WORK, CARRY, MOVE, MOVE], newName,
+                { memory: { role: 'upgrader', debug: false } });
         }
     }
 
@@ -172,6 +192,9 @@ module.exports.loop = function () {
         var creep = Game.creeps[name];
         if (creep.memory.role == 'worker') {
             roleWorker.run(creep);
+        }
+        if (creep.memory.role == 'upgrader') {
+            roleUpgrader.run(creep);
         }
         if (creep.memory.role == 'miner') {
             roleMiner.run(creep);
