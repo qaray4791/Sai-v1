@@ -1,3 +1,5 @@
 1. Need to work on refactoring code to organize better.
 2. Would like to break spawning code out into it's own file.
 3. Perhaps break out construction out into it's own file as well.
+4. Automate walls and ramparts? Is there beneifit to this?
+5. Automate road building

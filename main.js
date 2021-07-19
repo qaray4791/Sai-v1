@@ -42,6 +42,7 @@ module.exports.loop = function () {
     var enemyAtTheGate = roomName.find(FIND_HOSTILE_CREEPS);
     if (enemyAtTheGate.length > 0) {
         console.log('There are ' + enemyAtTheGate.length + ' enemies at the gate!');
+        console.log('Rallying the troops!');
     }
 
     // find things that need energy
@@ -101,11 +102,11 @@ module.exports.loop = function () {
 
     // RC3: Get tower placed and built
     // Place tower at RC3 relative to spawn
-    if (roomControllerLevel > 2) {
+    if (roomControllerLevel == 3) {
         roomName.createConstructionSite(spawnPos.x, (spawnPos.y - 3), STRUCTURE_TOWER);
     }
     // Keep workers and upgraders the same f
-    if (roomControllerLevel == 2) {
+    if (roomControllerLevel == 3) {
         var desiredWorkers = 4;
         var desiredUpgraders = 2;
         var desiredMiners = 0;
@@ -116,8 +117,8 @@ module.exports.loop = function () {
     // Will lower levels of non essential creeps until hostiles are gone
     if (roomControllerLevel == 4) {
         if (enemyAtTheGate.length > 0) {
-            console.log((enemyAtTheGate.length * 3) + ' Minutemen being spawned!');
-            var desiredMinutemen = 3 * (enemyAtTheGate.length);
+            
+            var desiredMinutemen = 0 * (enemyAtTheGate.length);
             var desiredWorkers = 2;
             var desiredUpgraders = 1;
             var desiredMiners = 1;
