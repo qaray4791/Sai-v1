@@ -27,6 +27,8 @@ module.exports.loop = function () {
         }
     });
 
+    var numberCreeps = roomName.find(FIND_MY_CREEPS);
+
     for (let spawn of spawns) {
         var spawnName = spawn.name;
         var spawnPos = spawn.pos;
@@ -35,7 +37,7 @@ module.exports.loop = function () {
         console.log('-------------------------------------------------------------------------------');
         console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' // ' 
         + roomName.controller.progress + '/' + roomName.controller.progressTotal 
-        + ' -- Spawn Name: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
+        + ' -- Spawn: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
     }
 
     // Detect hostile creeps in room and raise the alarm
@@ -70,7 +72,7 @@ module.exports.loop = function () {
     console.log('Needs Energy: ' + taskStructures.length);
     console.log('Needs Repair: ' + taskRepairs.length);
     console.log('Needs Built: ' + taskSites.length);
-    console.log('----CREEPS----');
+    console.log('----CREEPS(' + numberCreeps.length + ')----');
 
     // Determine desired creep roles and number of each based on Room Controller Level
 
@@ -102,7 +104,7 @@ module.exports.loop = function () {
 
     // RC3: Get tower placed and built
     // Place tower at RC3 relative to spawn
-    if (roomControllerLevel == 3) {
+    if (roomControllerLevel > 3) {
         roomName.createConstructionSite(spawnPos.x, (spawnPos.y - 3), STRUCTURE_TOWER);
     }
     // Keep workers and upgraders the same f
@@ -115,7 +117,7 @@ module.exports.loop = function () {
 
     // RC4: Spawn Minutemen if there are hostiles
     // Will lower levels of non essential creeps until hostiles are gone
-    if (roomControllerLevel == 4) {
+    if (roomControllerLevel > 3) {
         if (enemyAtTheGate.length > 0) {
             
             var desiredMinutemen = 0 * (enemyAtTheGate.length);
@@ -125,7 +127,7 @@ module.exports.loop = function () {
             var desiredHaulers = 1;
         }
         if (enemyAtTheGate.length == 0) {
-            var desiredWorkers = 4;
+            var desiredWorkers = 10;
             var desiredUpgraders = 2;
             var desiredMiners = 1;
             var desiredHaulers = 1;
