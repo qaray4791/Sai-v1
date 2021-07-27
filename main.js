@@ -37,7 +37,8 @@ module.exports.loop = function () {
         console.log('-------------------------------------------------------------------------------');
         console.log('Room Name: ' + roomName.name + ' -- RCL: ' + roomControllerLevel + ' // ' 
         + roomName.controller.progress + '/' + roomName.controller.progressTotal 
-        + ' -- Spawn: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' -- Tick: ' + Game.time);
+        + ' -- Spawn: ' + spawnName + ' -- Ext: ' + numberExtensions.length + ' // Energy: ' + roomName.energyAvailable + ' of ' +
+        roomName.energyCapacityAvailable + ' -- Tick: ' + Game.time);
     }
 
     // Detect hostile creeps in room and raise the alarm
@@ -127,7 +128,7 @@ module.exports.loop = function () {
             var desiredHaulers = 1;
         }
         if (enemyAtTheGate.length == 0) {
-            var desiredWorkers = 10;
+            var desiredWorkers = 4;
             var desiredUpgraders = 2;
             var desiredMiners = 1;
             var desiredHaulers = 1;
